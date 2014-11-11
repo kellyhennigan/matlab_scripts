@@ -1,0 +1,30 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MakePathStruct()
+%
+% makes a path structure 
+% & adds necessary paths to s
+%
+% Kelly Hennigan, 5/2010
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function thePath = MakePathStruct()
+    pwd
+    fprintf('\n\n Make sure the current directory is the experiment main directory\n\n');
+    thePath.main = pwd;
+    
+    [pathstr,curr_dir,ext,versn] = fileparts(pwd);
+    if ~strcmp(curr_dir,'DiscExpt')
+        error('You must start the experiment from the DiscExpt directory. Go there and try again.\n');
+    end
+    thePath.scripts = fullfile(thePath.main, 'scripts');
+    thePath.data = fullfile(thePath.main, 'data');
+    thePath.stim = fullfile(thePath.main, 'stim');
+
+    % Add relevant paths for this experiment
+    names = fieldnames(thePath);
+    for f = 1:length(names)
+        eval(['addpath(thePath.' names{f} ')']);
+        fprintf(['added ' names{f} '\n']);
+    end
+ 
+end

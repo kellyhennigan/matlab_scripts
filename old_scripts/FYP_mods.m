@@ -1,0 +1,118 @@
+%% Multiplicative Habit Stock Model
+
+clear all; 
+clc; 
+clf;
+
+mycolors = [255 2 0; 228 96 0; 231 178 0; 224  255 10; 87  255 21; 0  255 145; 35  252  255; 7 81 255;  85 36 255]./255;
+% red orange orange-yellow yellow green aqua blue violet
+
+T = 100;          % total time (arbitrary units)
+t_inc = 0:T; % time intervals 
+c(1:length(t_inc)) = 100;      % consumption level (exogenous)
+hs0 = 1;         % initial habit stock 
+Uc(1:length(t_inc)) = 100; %utility without habit or discounting
+
+%sigma = .2;
+gamma = .01;      % indexes relative importance of habits for utility
+lambda = .01;     % determines how quickly consumption becomes a habit
+% (eg, at lambda = .1, the half life would be 6.93 time steps, bc e^-.1t =
+% .5 when t = 6.93
+
+hs=hs0;
+
+for t = 1:length(t_inc)
+    %c(t)=t_inc(t);
+    if t < length(t_inc),
+    hs(t+1) = hs(t) + lambda.*(c(t) - hs(t));   % habit stock evolution
+    end  
+    U(t) = c(t).*hs(t)^gamma; % Utility Function for MULTIPLICATIVE model
+%    U(t) = ((c(t)./hs(t)^gamma)^(1-sigma))/(1-sigma);     
+    MUc(t) = (c(t).*(hs(t)^(-gamma)))^(-lambda)*hs(t)^(-gamma);    %MU w/respect to c (for mult. mod)
+    MUh(t) = -gamma*MUc(t)*(c(t)/hs(t));    %MU w/respect to habit (for mult. mod)
+   % Us(t) = c(t) - hs(t)^gamma;              % Utility Function in SUBTRACTIVE Model
+    hs_to_the_gamma(t) = hs(t)^gamma;
+end
+
+
+
+%%%%%%%%%%%%% 
+% Plot 
+%%%%%%%%%%%%% 
+
+
+figure(1),%subplot(1,2,1)
+% plot(Uc,Uc,'b',U'linewidth',1.5)
+plot(t_inc,c, t_inc, hs, t_inc, U, 'linewidth',1.5)
+xlabel('time (repeated consumption)')
+%ylabel('Utility')
+title('Preference ratings, consumption, and habit stock dynamics','fontsize',15)
+%legend('consumption level','habit stock','Utility (c/h^ gamma)');
+legend('c = 1,2,...10', texlabel('habit stock (gamma & lambda = 0.2)'), texlabel('U(c,h)= c*h^ gamma'),'location','best');
+
+%plot two goods x & y that are perfect substitutes: y=-x+10
+x = 0:100;
+y = -x + 100;    % value of good c without habit stock
+y2 = (-x.*(hs_to_the_gamma)) + 100;
+
+figure(2),
+plot(x,y,'b',x,y2,'r', 'linewidth', 1.5)
+xlabel('Good X')
+ylabel('Good Y')
+title('Indifference Curve effect of habit stock','fontsize',14)
+legend('x + y = 10',texlabel('x*(h^gamma) + y = 10'),'fontsize',14,'location','best');
+
+a=strcat('U(c,h) = c * h',texlabel('^ gamma'));
+figure(3),%subplot(1,2,1)
+plot(t_inc, U,'color', mycolors(8,:),'linewidth',3)
+ylim([100 105])
+xlabel('time (repeated consumption)','fontsize',14)
+set(gca,'XTick',0:150:150)
+set(gca,'YTick',50:100:250)
+ylabel('Preference (arbitrary units)','fontsize',14)
+title('Preference Change with Experience','fontsize',14)
+legend(a,'Location','best','fontsize',14);
+%legend('location','best',texlabel('U(c,h)= (c * h^ gamma)'),'fontsize',14);
+
+
+%text(6.5,-.3,['y = ',num2str(a,'%10.2f'),' + ',num2str(b,'%10.2f'),'x'],'fontsize',14,'fontweight','demi'); % show equation
+% 
+% MUc(t) = (c(t)*(hs(t)^(-gamma)))^(-lambda)*hs(t)^(-gamma);    %MU w/respect to c (for mult. mod)
+% MUh(t) = -gamma*MUc(t)*(c(t)/hs(t));    %MU w/respect to habit (for mult. mod)
+
+
+figure(4),
+plot(t_inc,U,'r',t_inc,MUc,'g',t_inc,MUh, 'b', 'linewidth', 1.5)
+xlabel('time (repeated consumption of good c)','fontsize',14)
+title('Marginal Utility Curves with habit stock','fontsize',14)
+%legend('consumption level','habit stock','Utility (c/h^ gamma)');
+legend(texlabel('U(c,h)= (c*h^ gamma)'), texlabel('MU^c = (c*h^(-gamma))^(-lambda)*h^(-gamma)c'), texlabel('MU^h = -gamma*MU^c*(c/h)'),'fontsize',14, 'location','best');
+
+
+
+figure(5), subplot(1,2,1)
+plot(t_inc,u_noh,t_inc,U,'linewidth',1.5)
+%plot(t_inc,c, t_inc, hs, t_inc, U, 'linewidth',1.5)
+xlabel('consumption over time','fontsize',15)
+title('Habit stock approachs consumption','FontSize',15)
+%legend('consumption level','habit stock','Utility (c/h^ gamma)');
+legend('U(c)= (c^ (1- r)) / (1- r)','U(c,h)= (c/h^ gamma)^ (1- r)) / (1-r)', 'FontSize',15);
+subplot(1,2,2)
+plot(t_inc,c,'m',t_inc,hs,'g',t_inc,Us,'b')
+xlabel('Experience')
+title('Subtractive Form')
+% legend('consumption level','habit stock','Utility (c - h^gamma)');
+
+cd ~/Dropbox/DNLab/FYP/FIGURES
+saveas(figure(3),'PrefChangePredictions.jpg');
+
+
+
+
+
+
+
+
+
+
+
