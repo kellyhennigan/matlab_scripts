@@ -6,10 +6,6 @@ function colors = solarizedColors(nColors)
 
 % these colors are from: http://ethanschoonover.com/solarized
 
-if ~exist('nColors','var') || isempty(nColors)
-    nColors = 64;
-end
-
 baseColors = [
     220  50  47
     203  75  22
