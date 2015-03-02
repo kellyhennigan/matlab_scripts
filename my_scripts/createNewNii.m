@@ -24,7 +24,7 @@ function outNii = createNewNii(refNii, newName, descrip, varargin)
 
 outNii = refNii; % get all header info from refNii
 
-% if fname is not defined, call it outNii
+% if newName is not defined, call it outNii
 if notDefined('newName')
     newName = 'outNii.nii.gz';
 end
@@ -33,10 +33,11 @@ end
 if ~ischar(newName)
     error('name for output nifti file must be a string');
 else
-    suffix = strfind(fname,'.nii');
+    suffix = strfind(newName,'.nii');
     if isempty(suffix)
-        fname = [fname,'.nii.gz'];
+        newName = [newName,'.nii.gz'];
     end
+end
 outNii.fname = newName;
 
 % add description of the data if provided
