@@ -6,6 +6,6 @@ nVarargs = length(varargin);
 fprintf('Inputs in varargin(%d):\n',nVarargs)
 for k = 1:nVarargs
     iscell(varargin{k})
-%    fprintf(num2str(k),'\n')
-%     fprintf('   %d\n', varargin{k})
+   fprintf(num2str(k),'\n')
+    fprintf('   %d\n', varargin{k})
 end
