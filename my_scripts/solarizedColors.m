@@ -6,15 +6,27 @@ function colors = solarizedColors(nColors)
 
 % these colors are from: http://ethanschoonover.com/solarized
 
+if notDefined('nColors')
+    nColors = 8;
+end
+
+% baseColors = [
+%     220  50  47
+%     203  75  22
+%     181 137   0
+%     133 153  0
+%     42 161 152
+%     38 139 210
+%     108 113 196
+%     211  54 130]./255;
 baseColors = [
     220  50  47
     203  75  22
     181 137   0
     133 153  0
     42 161 152
-    38 139 210
-    108 113 196
-    211  54 130]./255;
+    38 139 210]./255;
+
 
 x = linspace(0,1,length(baseColors)); 
 

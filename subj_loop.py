@@ -21,16 +21,17 @@ print '2) '+data_dir2
 
 dir_choice = raw_input('which data directory(1 or 2)?')
 
-if dir_choice==1:
+
+if dir_choice==str(1):
 	data_dir = data_dir1
 	subjects = ['sa01','sa07','sa10','sa11','sa13','sa14','sa16','sa18',
 	'sa19','sa20','sa21','sa22','sa23','sa24','sa25','sa26','sa27',
 	'sa28','sa29','sa30','sa31','sa32','sa33','sa34'] # subjects to process
 
-elif dir_choice==2:
+elif dir_choice==str(2):
 	data_dir = data_dir2
 	subjects = ['9','10','11','12','14','15','16','17','18','19',
-	'20','21','23','24','25','26','27','29'] # subjects to process
+	'20','21','23','24','25','26','27','28','29','30'] # subjects to process
 
 	
 

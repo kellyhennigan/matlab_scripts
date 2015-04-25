@@ -1,55 +1,71 @@
-function outNii = createNewNii(refNii, newName, descrip, varargin)
+function outNii = createNewNii(refNii, varargin)
 % -------------------------------------------------------------------------
 % usage: use this function to create a new nifti for a volume(s) that have
 % the same dimensions/space as a given template nifti file
-
-
+% 
+% 
 % INPUT:
 %   refNii - reference nifti to get all header info (xform, voxel
 %            dimensions, etc.)
-%   newName - string specifying the file name for the new out nifti
-%   descrip (optional) - string giving additional info about this
-%           data, e.g., 'vol1 is Fstat; vol2 is p-stat; df(2,17)
-%   varargin - 3d volumes to include in outNii; must be the same
-%           dimensions as the refNii
-
+% 
+%   varargin - can be any number of volumes, and/or an outName and 
+%              description of the new nifti file. 
+% 
+%             If no volumes are given, outNii will be returned with a
+%             volume of all zeros. 
+% 
+%             If strings are given, the first one will be defined as the
+%             fname for the new nifti file and the second one will be
+%             placed in the descrip field.
+% 
+% 
 % OUTPUT:
 %   outNii - nifti struct containing info/data specified by input
-
-% NOTES:
+% 
+% 
 %
-% kelly 2012
+% kelly 2012; 
+% revised 4/2015 to be more flexible
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 
-outNii = refNii; % get all header info from refNii
-
-% if newName is not defined, call it outNii
-if notDefined('newName')
-    newName = 'outNii.nii.gz';
+% make sure a refNii is given 
+if notDefined('refNii')
+    error('refNii must be given')
 end
 
-% if fname doesn't have nii file extension, had it
-if ~ischar(newName)
-    error('name for output nifti file must be a string');
-else
-    suffix = strfind(newName,'.nii');
-    if isempty(suffix)
-        newName = [newName,'.nii.gz'];
-    end
+
+% if refNii is a string, load it
+if ischar(refNii)
+    refNii = readFileNifti(refNii);
 end
-outNii.fname = newName;
-
-% add description of the data if provided
-outNii.descrip = descrip;
 
 
-% fill in data w/input volumes
-outNii.data = [];
-if ~isempty(varargin)
-    for h = 1:length(varargin)
-        outNii.data = cat(4,outNii.data, varargin{h});
-    end
+% define outNii based on refNii
+outNii = refNii; 
+outNii.data=zeros(outNii.dim(1:3)); % replace data w/ a volume of zeros
+outNii.fname = 'outNii.nii.gz';     % if an outName is given, this will be replaced below
+
+
+
+% fill in data if given (will either be numeric or logical)
+vol_idx = find(cellfun(@(x) isnumeric(x), varargin)+cellfun(@(x) islogical(x), varargin));
+if ~isempty(vol_idx)
+    outNii.data=cat(4,varargin{vol_idx});
+end
+
+
+% fill in outNii.fname if given
+str_idx = find(cellfun(@(x) ischar(x), varargin));
+if ~isempty(str_idx)
+    outName=varargin{str_idx(1)};
+    outNii.fname = [strrep(strrep(outName,'.nii',''),'.gz','') '.nii.gz']; % this ensures .nii.gz extension is good
+end
+
+% fill in outNii.descrip if given
+if numel(str_idx)>1
+    outNii.descrip=varargin{str_idx(2)};
 end
 
 
