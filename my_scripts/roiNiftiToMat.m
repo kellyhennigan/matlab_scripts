@@ -1,4 +1,4 @@
-function roi = roiNiftiToMat(roiNii, outName,saveMat)
+function roi = roiNiftiToMat(roiNii, saveOut)
 %
 % converts a nifti roi file to a .mat file
 % of the same format as those generated
@@ -7,21 +7,23 @@ function roi = roiNiftiToMat(roiNii, outName,saveMat)
 % uses the dtiNewRoi function to make the Roi
 %
 % inputs:
-%     roiNii - file name of nii file (e.g., 'ROI.nii.gz')
-%     outName - name for new matRoiFile. If not given, it will be the
-%               same name as the .nii file.
-%     saveMat (optional) - 1 to save out .mat file, otherwise 0.
-%                          Default is to save.
-%
+%   roiNii - file name of nii file (e.g., 'ROI.nii.gz')
+%   saveOut - 1 to save out roi file, otherwise 0. Default is 0. If
+%          saveOut=1 and the roiNii is a filepath, the roi will be
+%          saved out to the same directory. If saveOut=1 and roiNii is
+%          loaded, then it will save out to the current working directory.
 %
 % outputs:
-%     matRoi - roi in .mat format and (unless saveMatRoi=0) .mat file saved
-%              out into the same directory as .nii roi file.
+%     matRoi - roi in .mat format with same name as roiNii. If saveOut is
+%     set to 1, it will be saved out to same directory as roiNii (if given
+%     as a filepath) or if roiNii was already loaded, will save out to the
+%     current directory. 
+
 %
 % example usage:
-%   roiNiftiToMat('path/to/nii/roi.nii.gz')     % outRoi will be given the same name as roiNii
-%   roiNiftiToMat('roiStr')                     % if roi is in the pwd
-%   roiNiftiToMat('path/to/nii/roi.nii.gz','outRoi')    % to give outRoi a different name
+%   roiNiftiToMat('path/to/nii/roi.nii.gz',1)     % roi.mat will be saved out to same dir as roiNii
+%   roi = roiNiftiToMat(roiNii)                   % to get roi coords without saving it out
+% 
 %
 % kjh 4/2011
 %
@@ -37,30 +39,27 @@ if notDefined('roiNii')
     error('roiNii must be given as input argument');
 end
 
+% unless user says to save out the file, don't save it
+if notDefined('saveOut')
+    saveOut = 0;
+end
+
+
+% if roiNii is a filepath, load it 
 if ischar(roiNii)
-    % if string doesn't have .nii.gz extension, add it
-    if isempty(strfind(roiNii,'.nii'))
-        roiNii = [roiNii '.nii.gz'];
-    end
     roiNii = readFileNifti(roiNii);
 end
 
-% check on outName argument
-if notDefined('outName')
-    % get file path, & roi string wo ".nii.gz" extension
-    [fp,fs,~]=fileparts(roiNii.fname); % fp gives filepath (if given)
-    [~,outName,~]=fileparts(fs); % do this again in the case of *.nii.gz to get just the fileStr
-end
 
-% check on saveMat argument
-if notDefined('saveMat')
-    saveMat = 1;
-end
+% get roiStr to name .mat roi the same thing
+[roiDir,roiStr]= fileparts(roiNii.fname);  
+[~,roiStr]= fileparts(roiStr);   % repeat to take .nii off of string
+    
 
 
 %% do it
 
-fprintf(['\ncreating roi ' outName '.mat\n']);
+fprintf(['\ncreating roi ' roiStr '.mat\n']);
 
 % get roi coords in img space
 [i j k]=ind2sub(size(roiNii.data),find(roiNii.data));
@@ -69,11 +68,11 @@ fprintf(['\ncreating roi ' outName '.mat\n']);
 acpc_coords = mrAnatXformCoords(roiNii.qto_xyz,[i j k]);
 
 % create a new roi with mrDiffusion structure
-roi=dtiNewRoi(outName,[],acpc_coords); % name, color, coords
+roi=dtiNewRoi(roiStr,[],acpc_coords); % name, color, coords
 
 
-% save out .mat roi file unless saveMat==0
-if saveMat
-    dtiWriteRoi(roi,fullfile(fp,outName), [],'acpc');  % roi, filename, versionNum, coordinateSpace, xform
+% if desired, save out .mat roi file 
+if saveOut
+    dtiWriteRoi(roi,fullfile(roiDir,roiStr), [],'acpc');  % roi, filename, versionNum, coordinateSpace, xform
 end
 

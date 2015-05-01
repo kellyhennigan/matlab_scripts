@@ -1,23 +1,30 @@
-function niiRoi = roiMatToNifti(matRoiFile, niiRefFile,outFName,saveNii)
+function niiRoi = roiMatToNifti(matRoiFile, niiRefFile,saveOut)
 %
-% converts a .mat roi to a nifti file 
-% and saves it in the same directory, unless saveNii==0
+% converts a .mat roi to a nifti file. 
+
+% if saving is desired, it will save out to the same directory as
+% matRoiFile (if its given as a filepath), otherwise, it will save it out
+% to the current directory.
 %
 % note: assumes this is called from a subject's main directory and that the
 % nii ref file is in the current dir
 %
 %
-% inputs: matRoiFile - .mat roi file to convert 
-%         refFile - reference file for header info
-%         outFName (optional) - name of new nii file
-%         saveNii (optional) - 1 to save out nii file, otherwise 0. Default
-%               is to save.
+% inputs: 
+%   matRoiFile - .mat roi file to convert 
+%   refFile - reference file for header info
+%   saveOut - 1 to save out nii roi file, otherwise 0. Default is 0. If
+%          saveOut=1 and the matRoiFile is a filepath, the nii roi will be
+%          saved out to the same directory. If saveOut=1 and matRoiFile is
+%          loaded, then it will save out to the current working directory.
 %
+% 
 % outputs: Roi nifti file and (if desired) saved to the same directory as
 %          roi mat file. 
 %
 % kjh 4/2011
 %
+% edited 4/2015 to be more flexible
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 
@@ -25,12 +32,14 @@ function niiRoi = roiMatToNifti(matRoiFile, niiRefFile,outFName,saveNii)
 if notDefined('matRoiFile')
     error('matRoiFile must be given as input argument');
 end
+
+% if its a filepath, load it
 if ischar(matRoiFile)
-    [fp,~,~]=fileparts(matRoiFile); % fp gives filepath (if given)
+    [fp,~,~]=fileparts(matRoiFile); % fp gives filepath 
     load(matRoiFile);
     matRoiFile = roi;
 else
-    fp = ''; % assign fp to '' if matRoiFile isn't a string
+    fp = '';   % set filepath to '' if not given
 end
 
 % checks on niiRefFile
@@ -41,17 +50,11 @@ if ischar(niiRefFile)
     niiRefFile = readFileNifti(niiRefFile);
 end
 
-% checks on outFName
-if notDefined('outFName')
-    outFName = fullfile(fp,matRoiFile.name);
-end
-if isempty(strfind(outFName,'.nii'))
-    outFName = [outFName '.nii.gz'];
-end
+outFName = matRoiFile.name;
 
 % check whether to save or not
-if notDefined('saveNii')
-    saveNii = 1;
+if notDefined('saveOut')
+    saveOut = 0;
 end
 
 
@@ -67,9 +70,10 @@ coordIndx = sub2ind(niiRefFile.dim(1:3),imgCoords(:,1),imgCoords(:,2),imgCoords(
 niiRoi = niiRefFile;
 niiRoi.data = zeros(niiRoi.dim(1:3));
 niiRoi.data(coordIndx) = 1;
-niiRoi.fname = outFName;
+niiRoi.fname = fullfile(fp,[matRoiFile.name '.nii.gz']);
+      
 
 % save new nifti ROI file
-if saveNii
+if saveOut      
     writeFileNifti(niiRoi);
 end
