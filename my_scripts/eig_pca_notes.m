@@ -45,7 +45,7 @@ some_v = [1;3]
 A*some_v
 
 % now mulitply it by an eigenvector of the transformation matrix A:
-ev = [3;2]; 
+ev = [3;2]
 
 out_v = A*ev
 
@@ -97,8 +97,8 @@ d = [2.5    2.4    2.2
     1.1    0.9    3.1];
 
 % or do: 
-d = randn(100,3);
-d(:,2) = d(:,1)+randn(100,1)./2;
+d = randn(100,3); % think of these columns as x,y,z coordinates
+d(:,2) = d(:,1)+randn(100,1)./2; % this introduces a correlation btwn columns 1 & 2
 
 
 [m,n] = size(d);  % m is # of observations & n is # of dimensions
@@ -120,7 +120,7 @@ cov_mat = cov(d) % gives square matrix with each dimension's variance on the dia
 
 %%%%% STEP 4: calculate eigenvectors and eigenvalues of the cov matrix
 
-[V,D]= eig(cov_mat)
+[V,D]= eig(cov_mat); % matrix V has eigenvectors as columns; D is diagonal matrix w/eigenvalues
 
 
 %%%%% STEP 5: choose componenets and form a feature vector
@@ -180,6 +180,7 @@ h2 = drawarrow([0 0],V(:,2)','b-',[],10,'LineWidth',2);
 legend([h1 h2],{'PC 1' 'PC 2'});
 xlabel('Dimension 1');
 ylabel('Dimension 2');
+cameratoolbar('Show');  cameratoolbar('SetMode','orbit');
 
 subplot(1,2,2); hold on;
 plot(d_rot(:,1),d_rot(:,2),'.');
@@ -189,6 +190,51 @@ h2 = drawarrow([0 0],[0 1],'b-',[],10,'LineWidth',2);
 legend([h1 h2],{'PC 1' 'PC 2'});
 xlabel('Projection onto PC 1');
 ylabel('Projection onto PC 2');
+
+
+
+
+%% try plotting in 3d: 
+
+
+figure
+scSize = get(0,'ScreenSize')
+setfigurepos([scSize(3)-700 scSize(4)-350 700 350]);
+
+
+
+subplot(1,2,1); hold on;
+
+scatter3(d(:,1),d(:,2),d(:,3),20,score(:,1),'filled')
+colormap spring
+axis equal;
+h1=vectarrow([0 0 0],[V(:,1)]',[0 0 0])
+h2=vectarrow([0 0 0],[V(:,2)]',[0 .2 1])
+h3=vectarrow([0 0 0],[V(:,3)]',[0 .7 .7])
+
+legend([h1 h2 h3],{'PC 1' 'PC 2' 'PC 3'});
+xlabel('x'), ylabel('y'), zlabel('z')
+cameratoolbar('Show');  cameratoolbar('SetMode','orbit');
+hold off
+
+
+
+subplot(1,2,2); hold on;
+
+scatter(d_rot(:,1),d_rot(:,2),20,score(:,1),'filled')
+colormap spring
+axis equal;
+h1=vectarrow([0 0 0],[V(:,1)]',[0 0 0])
+h2=vectarrow([0 0 0],[V(:,2)]',[0 .2 1])
+h3=vectarrow([0 0 0],[V(:,3)]',[0 .7 .7])
+
+legend([h1 h2 h3],{'PC 1' 'PC 2' 'PC 3'});
+xlabel('Projection onto PC 1');
+ylabel('Projection onto PC 2');
+ylabel('Projection onto PC 3');
+cameratoolbar('Show');  cameratoolbar('SetMode','orbit');
+hold off
+
 
 
 
