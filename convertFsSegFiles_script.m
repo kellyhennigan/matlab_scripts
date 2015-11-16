@@ -22,41 +22,43 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 !source $FREESURFER_HOME/SetUpFreeSurfer.sh 
-
 fshome = getenv('FREESURFER_HOME');
 % setenv('FREESURFER_HOME',fshome);  % this to tell where FS folder is
 
 subject = 'aa151010'; 
 
-inDir = [fshome '/subjects/' subject '/mri']; % freesurfer subject mri dir
+inDir = ['/home/hennigan/freesurfer/subjects/' subject '/mri']; % freesurfer subject mri dir
 outDir = ['/home/hennigan/cueexp/data/' subject '/t1']; % dir for out nifti files
 
 
 %% do it 
 
-cd(inDir);
+if ~exist(inDir,'dir')
+    error(['cant find in directory ' inDir '...']);
+end
+if ~exist(outDir, 'dir')
+    mkdir(outDir)
+end
 
 % Convert fs t1 to nifti 
-cmd = [fshome '/bin/mri_convert --out_orientation RAS -i T1.mgz -o ' outDir '/t1_fs.nii.gz'];
+cmd = [fshome '/bin/mri_convert --out_orientation RAS -i ' inDir '/T1.mgz -o ' outDir '/t1_fs.nii.gz'];
 unix_wrapper(cmd);
 
 
 % Convert ribbon.mgz to a nifti class file
-infile = [inDir '/ribbon.mgz'];
 outfile     = [outDir '/t1_class.nii.gz'];
 resample_type = 'weighted';
 fillWithCSF = true;
 cmd = [fshome '/bin/mri_convert --out_orientation RAS -rt ' resample_type ' -i ',...
-    infile ' -o ' outfile];
+   inDir '/ribbon.mgz -o ' outfile];
 unix_wrapper(cmd);
 
 
 % Convert aparc+aseg.mgz file
-infile = [inDir '/aparc+aseg.mgz'];
 outfile2     = [outDir '/aparc+aseg.nii.gz'];
 resample_type = 'weighted';
 cmd = [fshome '/bin/mri_convert --out_orientation RAS -rt ' resample_type ' -i ',...
-    infile ' -o ' outfile2];
+    inDir '/aparc+aseg.mgz -o ' outfile2];
 unix_wrapper(cmd);
 
 
