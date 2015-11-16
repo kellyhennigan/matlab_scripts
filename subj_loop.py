@@ -36,7 +36,7 @@ def whichSubjects():
 
 	elif dir_choice==str(2):
 		data_dir = data_dir2
-		subjects = ['9','10','11','12','14','15','16','17','18','19',
+		subjects = ['9','10','11','12','13','14','15','16','17','18','19',
 		'20','21','23','24','25','26','27','28','29','30'] # subjects to process
 
 	return data_dir, subjects

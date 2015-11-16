@@ -1,4 +1,4 @@
-Copyright (c) 2013, James Conder
+Copyright (c) 2009, Antonio Trujillo-Ortiz
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

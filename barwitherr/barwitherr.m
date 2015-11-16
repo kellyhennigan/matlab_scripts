@@ -17,20 +17,20 @@
 %   y = randn(3,4);         % random y values (3 groups of 4 parameters)
 %   errY = 0.1.*y;          % 10% error
 %   h = barwitherr(errY, y);% Plot with errorbars
-%
+% 
 %   set(gca,'XTickLabel',{'Group A','Group B','Group C'})
 %   legend('Parameter 1','Parameter 2','Parameter 3','Parameter 4')
 %   ylabel('Y Value')
 %   set(h(1),'FaceColor','k');
 %
-%
+
 %   Asymmetric Example:
 %   y = randn(3,4);         % random y values (3 groups of 4 parameters)
 %   errY = zeros(3,4,2);
 %   errY(:,:,1) = 0.1.*y;   % 10% lower error
 %   errY(:,:,2) = 0.2.*y;   % 20% upper error
 %   barwitherr(errY, y);    % Plot with errorbars
-%
+% %
 %   set(gca,'XTickLabel',{'Group A','Group B','Group C'})
 %   legend('Parameter 1','Parameter 2','Parameter 3','Parameter 4')
 %   ylabel('Y Value')
@@ -105,7 +105,11 @@ else
     upperErrors = errors;
 end
 
-    
+varargin
+lowerErrors
+upperErrors
+values
+
 % Check that the size of "errors" corresponsds to the size of the y-values.
 % Arbitrarily using lower errors as indicative.
 if any(size(values) ~= size(lowerErrors))

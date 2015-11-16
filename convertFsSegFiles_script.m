@@ -4,7 +4,8 @@
 % .mgz format and converts them to nifti files. Also changes some of the
 % segmentation indices for better functionality with mr vista software. 
 
-% the script creates/converts the following files: 
+% the script takes in files created from Freesurfer's "recon-all" call, and
+% converts them to nifti files. 
 
 
 % t1.class.nii.gz - segmentation file with the following indices: 
@@ -25,11 +26,10 @@
 fshome = getenv('FREESURFER_HOME');
 % setenv('FREESURFER_HOME',fshome);  % this to tell where FS folder is
 
-subject = 'sa01'; 
+subject = 'aa151010'; 
 
-% inDir = [fshome '/subjects/' subject '/mri']; % freesurfer subject mri dir
-inDir = '/Users/Kelly/dti/data/sa01/t1/fs'; % dir for out nifti files
-outDir = '/Users/Kelly/dti/data/sa01/t1'; % dir for out nifti files
+inDir = [fshome '/subjects/' subject '/mri']; % freesurfer subject mri dir
+outDir = ['/home/hennigan/cueexp/data/' subject '/t1']; % dir for out nifti files
 
 
 %% do it 
