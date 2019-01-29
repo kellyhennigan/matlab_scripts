@@ -11,7 +11,7 @@
 % 
 % NOTES: 
 % 
-% author: Kelly, kelhennigan@gmail.com, Nov 2013
+% author: Kelly MacNiven, kelhennigan@gmail.com, Nov 2013
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function getFuncTemplate()

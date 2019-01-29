@@ -172,7 +172,7 @@ if s > 1
     table = { 'Source' 'SS' 'df' 'MS' 'F' 'Prob>F'
         'Time'  ssT t-1 msT FT pT
         'Group' ssG s-1 msG FG pG
-        'Ineratcion' ssGT (s-1)*(t-1) msGT FGT pGT
+        'Interaction' ssGT (s-1)*(t-1) msGT FGT pGT
         'Subjects (matching)' ssSG n-s msSG FSG pSG
         'Error' ssR (n-s)*(t-1) msR  [] []
         'Total' [] [] [] [] []

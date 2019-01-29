@@ -1,20 +1,15 @@
-function hf = setupFig(hf)
+function hf = setupFig(hf,fSize)
 % --------------------------------
 % usage: call this to set up a matlab figure 
 
 % INPUT:
-%   hf - figure handle
+%   hf (optional) - figure handle
+%   fSize (optional) - font size
   
 % OUTPUT:
 %   hf - figure handle 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% define some variables 
-
-font = 'Arial';
-fSize = 12;
-
-
 %% do it 
 
 if notDefined('hf')
@@ -24,7 +19,11 @@ else
 end
 hold on
 
-set(gca,'fontName',font,'fontSize',fSize);
+if notDefined('fSize')
+    fSize = 12;
+end
+
+set(gca,'fontName','Helvetica','fontSize',fSize);
 set(gca,'box','off');
 set(gcf,'Color','w','InvertHardCopy','off','PaperPositionMode','auto');
 
